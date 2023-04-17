@@ -56,13 +56,13 @@ class Board:
         if (self.positionExists(position) == False):
             raise BoardException("Posição não encontrada.")
 
-        return self.getPiece[position.row, position.column]
+        return self.getPiece(position.row, position.column)
 
     def placePiece(self, piece, position):
         if (self.haveAPiece(position)):
             raise BoardException("Já existe uma peça nessa posição.")
 
-        self.pieces[position.row, position.column] = piece
+        self.pieces[position.row][position.column] = piece
         piece.position = position
 
     def removePiece(self, position):
@@ -79,7 +79,7 @@ class Board:
         return removedPiece
 
     def getPiece(self, row, column):
-        return self.pieces(row, column)
+        return self.pieces[row][column]
 
     def positionExists(self, position):
         return position.row >= 0 and position.row < self.rows and position.column >= 0 and position.column < self.columns

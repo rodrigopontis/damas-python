@@ -14,10 +14,10 @@ class CheckersPosition:
         self.row = row
 
     def toPosition(self):
-        return Position(self.row, ord(self.column) - ord('a'))
+        return Position(self.row - 1, (ord(self.column) - ord('a')))
 
     def fromPosition(self, position):
-        return self.__init__(ord('a') + position.column, 8 - position.row)
+        return self.__init__(chr(ord('a') + position.column), 7 - position.row)
 
 
 class CheckersPiece(Piece):
@@ -50,15 +50,24 @@ class CheckersMatch:
         self.board = Board(8, 8)
         self.currentPlayer = 'white'
         self.turn = 1
-        # self.initialSetup()
+        self.initialSetup()
 
     def placeNewPiece(self, column, row, piece):
-        print("trying to put a", piece.color, "piece to the position:",
-              column, ",", row)
-        # self.board.placePiece(
-        #     piece, CheckersPosition(column, row).toPosition())
+        self.board.placePiece(
+            piece, CheckersPosition(column, row).toPosition())
         # self.piecesInGame.append(piece)
 
     def initialSetup(self):
-        newPiece = CheckersPiece(self.board, 'white')
-        self.placeNewPiece('a', 1, newPiece)
+        whitePositions = ['a8', 'c8', 'e8', 'g8', 'b7',
+                          'd7', 'f7', 'h7', 'a6', 'c6', 'e6', 'g6']
+
+        blackPositions = ['b1', 'd1', 'f1', 'h1', 'a2',
+                          'c2', 'e2', 'g2', 'b3', 'd3', 'f3', 'h3']
+
+        for i in whitePositions:
+            self.placeNewPiece(
+                i[0], int(i[1]), CheckersPiece(self.board, "white"))
+
+        for i in blackPositions:
+            self.placeNewPiece(
+                i[0], int(i[1]), CheckersPiece(self.board, "black"))

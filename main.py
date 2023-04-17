@@ -7,7 +7,6 @@ def __main__():
 
     interface = CheckersUI()
     interface.printBoard(newMatch.board.getPieces())
-    interface.inputMovement()
 
 
 if (__name__ == '__main__'):
