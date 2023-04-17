@@ -38,10 +38,19 @@ class Piece:
 
 class Board:
     pieces = []
+    rows = 0
+    columns = 0
 
     def __init__(self, rows, columns):
         if (rows < 1 or columns < 1):
             raise BoardException("Número de linhas ou colunas inválido.")
+
+        self.rows = rows
+        self.columns = columns
+        self.pieces = [[None for x in range(rows)] for y in range(columns)]
+
+    def getPieces(self):
+        return self.pieces
 
     def getPieceFromPosition(self, position):
         if (self.positionExists(position) == False):
@@ -50,7 +59,7 @@ class Board:
         return self.getPiece[position.row, position.column]
 
     def placePiece(self, piece, position):
-        if (self.haveAPiece):
+        if (self.haveAPiece(position)):
             raise BoardException("Já existe uma peça nessa posição.")
 
         self.pieces[position.row, position.column] = piece
