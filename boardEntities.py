@@ -25,6 +25,9 @@ class Piece:
     def possibleMove(self, position):
         return self.possibleMoves()[position.row, position.column]
 
+    def havePossibleMove(self):
+        return True
+
     def isAPossibleMove(self):
         matrix = self.possibleMoves()
 

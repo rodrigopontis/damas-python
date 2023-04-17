@@ -52,10 +52,36 @@ class CheckersMatch:
         self.turn = 1
         self.initialSetup()
 
+    def makingACheckersMovement(self, sourcePosition, targetPosition):
+        source = sourcePosition.toPosition()
+        target = targetPosition.toPosition()
+
+        self.validateSourcePosition(source)
+        self.validateTargetPosition(target)
+
+    def makeMove(self, sourcePosition, targetPosition):
+        movingPiece = self.board.getPieceFromPosition(sourcePosition)
+
+    def validateSourcePosition(self, source):
+        if self.board.haveAPiece(source) == False:
+            raise CheckersException("Não tem peça na posição selecionada.")
+
+        if (self.currentPlayer != self.board.getPieceFromPosition(source).color):
+            raise CheckersException("A peça escolhida não é do seu time.")
+
+        # if (self.board.getPieceFromPosition(source).havePossibleMove() == False):
+        #     raise CheckersException(
+        #         "Não existem movimentos possíveis para a peça selecionada.")
+
+    def validateTargetPosition(self, source, target):
+        if (self.board.getPieceFromPosition(source).possibleMove(target) == False):
+            raise CheckersException(
+                "A peça escolhida nao pode se mover para a posição selecionada.")
+
     def placeNewPiece(self, column, row, piece):
         self.board.placePiece(
             piece, CheckersPosition(column, row).toPosition())
-        # self.piecesInGame.append(piece)
+        self.piecesInGame.append(piece)
 
     def initialSetup(self):
         whitePositions = ['a8', 'c8', 'e8', 'g8', 'b7',
