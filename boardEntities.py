@@ -45,7 +45,7 @@ class Board:
     columns = 0
 
     def __init__(self, rows, columns):
-        if (rows < 1 or columns < 1):
+        if rows < 1 or columns < 1:
             raise BoardException("Número de linhas ou colunas inválido.")
 
         self.rows = rows
@@ -56,23 +56,23 @@ class Board:
         return self.pieces
 
     def getPieceFromPosition(self, position):
-        if (self.positionExists(position) == False):
+        if self.positionExists(position) == False:
             raise BoardException("Posição não encontrada.")
 
         return self.getPiece(position.row, position.column)
 
     def placePiece(self, piece, position):
-        if (self.haveAPiece(position)):
+        if self.haveAPiece(position):
             raise BoardException("Já existe uma peça nessa posição.")
 
         self.pieces[position.row][position.column] = piece
         piece.position = position
 
     def removePiece(self, position):
-        if (self.positionExists(position) == False):
+        if self.positionExists(position) == False:
             raise BoardException("Esta posição não existe no tabuleiro.")
 
-        if (self.getPieceFromPosition(position) == None):
+        if self.getPieceFromPosition(position) == None:
             return None
 
         removedPiece = self.getPieceFromPosition(position)
@@ -85,10 +85,15 @@ class Board:
         return self.pieces[row][column]
 
     def positionExists(self, position):
-        return position.row >= 0 and position.row < self.rows and position.column >= 0 and position.column < self.columns
+        return (
+            position.row >= 0
+            and position.row < self.rows
+            and position.column >= 0
+            and position.column < self.columns
+        )
 
     def haveAPiece(self, position):
-        if (self.positionExists(position) == False):
+        if self.positionExists(position) == False:
             raise BoardException("Posição não encontrada.")
 
         return self.getPieceFromPosition(position) != None
