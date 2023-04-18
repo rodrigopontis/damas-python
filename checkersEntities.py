@@ -18,12 +18,16 @@ class CheckersPosition:
     def fromPosition(position):
         return CheckersPosition(chr(ord("a") + position.column), position.row + 1)
 
+    def __eq__(self, other):
+        return self.column == other.column and self.row == other.row
+
     def toString(self):
         return self.column + str(self.row)
 
 
 class CheckersPiece(Piece):
     moveCount = 0
+    piecesToEat = []
 
     def __init__(self, board, color):
         super().__init__(board)
@@ -41,20 +45,35 @@ class CheckersPiece(Piece):
         ]
 
         if self.color == "white":
-            right = Position(self.position.row - 1, self.position.column + 1)
-            left = Position(self.position.row - 1, self.position.column - 1)
+            right = self.directions(self.position)["ne"]
+            left = self.directions(self.position)["nw"]
 
             if self.board.positionExists(right):
                 if self.board.haveAPiece(right) == False:
                     moves[right.row][right.column] = True
                 elif self.haveAOpponentPiece(right):
-                    print("Peça adversaria na direita")
-                    moves[right.row - 1][right.column + 1] = True
+                    newPos = Position(right.row - 1, right.column + 1)
+                    if self.board.haveAPiece(newPos) == False:
+                        for direction in self.directions(newPos):
+                            pos = self.directions(newPos)[direction]
+                            if pos != right and self.haveAOpponentPiece(pos):
+                                print(CheckersPosition.fromPosition(pos).toString())
 
             if self.board.positionExists(left):
-                print("possible move left", left)
+                if self.board.haveAPiece(left) == False:
+                    moves[left.row][left.column] = True
+                elif self.haveAOpponentPiece(left):
+                    moves[left.row - 1][left.column - 1] = True
 
         return moves
+
+    def directions(self, position):
+        return {
+            "ne": Position(position.row - 1, position.column + 1),
+            "nw": Position(position.row - 1, position.column - 1),
+            "se": Position(position.row + 1, position.column + 1),
+            "sw": Position(position.row + 1, position.column - 1),
+        }
 
     def getCheckersPosition(self):
         return CheckersPosition.fromPosition(self.position)
@@ -155,5 +174,10 @@ class CheckersMatch:
         #     self.placeNewPiece(i[0], int(i[1]), CheckersPiece(self.board, "black"))
 
         # Setup de teste
-        self.placeNewPiece("a", 8, CheckersPiece(self.board, "white"))
-        self.placeNewPiece("b", 7, CheckersPiece(self.board, "black"))
+        self.placeNewPiece("d", 8, CheckersPiece(self.board, "white"))
+        self.placeNewPiece("c", 7, CheckersPiece(self.board, "black"))
+        self.placeNewPiece("e", 7, CheckersPiece(self.board, "black"))
+        self.placeNewPiece("e", 5, CheckersPiece(self.board, "black"))
+        # self.placeNewPiece("f", 6, CheckersPiece(self.board, "black"))
+        self.placeNewPiece("g", 5, CheckersPiece(self.board, "black"))
+        self.placeNewPiece("g", 3, CheckersPiece(self.board, "black"))

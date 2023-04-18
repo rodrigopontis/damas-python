@@ -12,6 +12,9 @@ class Position:
         self.row = row
         self.column = column
 
+    def __eq__(self, other):
+        return self.column == other.column and self.row == other.row
+
 
 class Piece:
     position = None
