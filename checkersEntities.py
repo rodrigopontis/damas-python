@@ -49,31 +49,89 @@ class CheckersPiece(Piece):
             left = self.directions(self.position)["nw"]
 
             if self.board.positionExists(right):
+                # verificando se existe uma peça
+                # na posicao a direita
                 if self.board.haveAPiece(right) == False:
                     moves[right.row][right.column] = True
+
+                # caso tenha uma peça
+                # verifica se é inimiga
                 elif self.haveAOpponentPiece(right):
-                    newPos = Position(right.row - 1, right.column + 1)
-                    if self.board.haveAPiece(newPos) == False:
-                        for direction in self.directions(newPos):
-                            pos = self.directions(newPos)[direction]
-                            if pos != right and self.haveAOpponentPiece(pos):
-                                print(CheckersPosition.fromPosition(pos).toString())
+                    # caso exista um espaço vazio
+                    # depois da peça inimiga
+                    # verifica se tem a possibilidade
+                    # de comer mais de uma peça
+                    checkingPos = Position(right.row - 1, right.column + 1)
+                    if (
+                        self.board.positionExists(checkingPos)
+                        and self.board.haveAPiece(checkingPos) == False
+                    ):
+                        newPos = self.eatPiece(checkingPos)
+                        moves[newPos.row][newPos.column] = True
 
             if self.board.positionExists(left):
                 if self.board.haveAPiece(left) == False:
                     moves[left.row][left.column] = True
                 elif self.haveAOpponentPiece(left):
-                    moves[left.row - 1][left.column - 1] = True
+                    checkingPos = Position(left.row - 1, left.column - 1)
+                    if (
+                        self.board.positionExists(checkingPos)
+                        and self.board.haveAPiece(checkingPos) == False
+                    ):
+                        newPos = self.eatPiece(checkingPos)
+                        moves[newPos.row][newPos.column] = True
 
         return moves
 
+    def eatPiece(self, position):
+        possibilities = []
+        self.verifyAllDirections(position, possibilities)
+
+        if len(possibilities) > 0:
+            return possibilities.pop()
+        else:
+            return position
+
+    def verifyAllDirections(self, position, stack):
+        if (
+            self.board.positionExists(position)
+            and self.board.haveAPiece(position) == False
+        ):
+            print("Verifying", CheckersPosition.fromPosition(position).toString())
+            stack.append(position)
+            for direction in self.directions(position):
+                pos = self.directions(position)[direction]
+                if pos != position and self.haveAOpponentPiece(pos):
+                    if direction == "ne":
+                        newPos = Position(pos.row - 1, pos.column + 1)
+                        self.verifyAllDirections(newPos, stack)
+                    if direction == "nw":
+                        newPos = Position(pos.row - 1, pos.column - 1)
+                        self.verifyAllDirections(newPos, stack)
+                    if direction == "se":
+                        newPos = Position(pos.row + 1, pos.column + 1)
+                        self.verifyAllDirections(newPos, stack)
+                    if direction == "sw":
+                        newPos = Position(pos.row + 1, pos.column - 1)
+                        self.verifyAllDirections(newPos, stack)
+
     def directions(self, position):
-        return {
-            "ne": Position(position.row - 1, position.column + 1),
-            "nw": Position(position.row - 1, position.column - 1),
-            "se": Position(position.row + 1, position.column + 1),
-            "sw": Position(position.row + 1, position.column - 1),
-        }
+        d = {}
+
+        # programação defensiva
+        if self.board.positionExists(Position(position.row - 1, position.column + 1)):
+            d["ne"] = Position(position.row - 1, position.column + 1)
+
+        if self.board.positionExists(Position(position.row - 1, position.column - 1)):
+            d["nw"] = Position(position.row - 1, position.column - 1)
+
+        if self.board.positionExists(Position(position.row + 1, position.column + 1)):
+            d["se"] = Position(position.row + 1, position.column + 1)
+
+        if self.board.positionExists(Position(position.row + 1, position.column - 1)):
+            d["sw"] = Position(position.row + 1, position.column - 1)
+
+        return d
 
     def getCheckersPosition(self):
         return CheckersPosition.fromPosition(self.position)
@@ -177,7 +235,6 @@ class CheckersMatch:
         self.placeNewPiece("d", 8, CheckersPiece(self.board, "white"))
         self.placeNewPiece("c", 7, CheckersPiece(self.board, "black"))
         self.placeNewPiece("e", 7, CheckersPiece(self.board, "black"))
-        self.placeNewPiece("e", 5, CheckersPiece(self.board, "black"))
-        # self.placeNewPiece("f", 6, CheckersPiece(self.board, "black"))
         self.placeNewPiece("g", 5, CheckersPiece(self.board, "black"))
         self.placeNewPiece("g", 3, CheckersPiece(self.board, "black"))
+        self.placeNewPiece("c", 5, CheckersPiece(self.board, "black"))
