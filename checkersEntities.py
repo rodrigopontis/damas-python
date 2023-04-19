@@ -108,17 +108,10 @@ class CheckersPiece(Piece):
                     if direction == "nw":
                         newPos = Position(pos.row - 1, pos.column - 1)
                         self.verifyAllDirections(newPos, stack)
-                    if direction == "se":
-                        newPos = Position(pos.row + 1, pos.column + 1)
-                        self.verifyAllDirections(newPos, stack)
-                    if direction == "sw":
-                        newPos = Position(pos.row + 1, pos.column - 1)
-                        self.verifyAllDirections(newPos, stack)
 
     def directions(self, position):
         d = {}
 
-        # programação defensiva
         if self.board.positionExists(Position(position.row - 1, position.column + 1)):
             d["ne"] = Position(position.row - 1, position.column + 1)
 
