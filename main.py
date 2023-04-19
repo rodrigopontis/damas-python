@@ -17,9 +17,10 @@ def __main__():
     possibleMoves = newMatch.possibleMoves(source)
     interface.printPossibleMoves(piecesInMatch, possibleMoves)
 
-    # target = input("Select a target: ")
+    target = input("Select a target: ")
 
-    # newMatch.makingACheckersMovement(source, target)
+    newMatch.makingACheckersMovement(source, target)
+    interface.printBoard(piecesInMatch)
 
 
 if __name__ == "__main__":
